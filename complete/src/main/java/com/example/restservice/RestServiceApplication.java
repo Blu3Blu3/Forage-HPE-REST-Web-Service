@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RestServiceApplication {
 
   public static void main(String[] args) {
+    System.out.println("Running in /complete!")
     SpringApplication.run(RestServiceApplication.class, args);
   }
 
