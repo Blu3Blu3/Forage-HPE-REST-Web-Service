@@ -6,33 +6,36 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 
 @RestController
 public class EmployeeController {
-    private Employees employees = new Employees();
+    // private Employees employees = new Employees();
+    private EmployeeManager manager = new EmployeeManager();
     
-    @GetMapping("/employees")
+    // You can't map two methods to the same URI; that'll cause ambiguous mapping, and Spring won't load that page.
+    // TODO: Double check how this is done!
+    @GetMapping("/emp")
     public Employee get_employee(@RequestParam(defaultValue = "-1") int id) {
-        return this.employees.get_employee(id);
+        int new_id = (int) id;
+        return this.manager.get_employees().get_employee(new_id);
     }
 
     @GetMapping("/employees")
     public Employee[] get_all_employees() {
-        return this.employees.get_all_employees();
+        return this.manager.get_employees().get_all_employees();
     }
 
     @PutMapping("/employees")
     public ResponseEntity<Object> add_employee(@RequestBody Employee employee) {
-        this.employees.add_employee(employee);
+        this.manager.get_employees().add_employee(employee);
         
-        String path = String.format("/%d", this.employees.get_current_id());
+        String path = String.format("/%d", this.manager.get_employees().get_current_id());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(path).buildAndExpand(employee.employee_id()).toUri();
         System.out.println(location);
-        
+
         return ResponseEntity.created(location).build();
     }
 }
